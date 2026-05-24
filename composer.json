@@ -3,7 +3,8 @@
     "description": "secp256k1 elliptic-curve arithmetic + RFC 6979 deterministic ECDSA sign / verify / recover in pure PHP on ext-gmp.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["secp256k1", "ecdsa", "elliptic-curve", "ecc", "crypto", "ethereum", "bitcoin"],
+    "homepage": "https://github.com/AndreyMashukov/secp256k1-php",
+    "keywords": ["secp256k1", "ecdsa", "elliptic-curve", "ecc", "crypto", "cryptography", "signature", "rfc6979", "ethereum", "evm", "bitcoin", "eip-191", "eip-712", "blockchain", "pure-php"],
     "authors": [
         {
             "name": "Andrei Mashukov",
@@ -11,6 +12,10 @@
             "homepage": "https://github.com/AndreyMashukov"
         }
     ],
+    "support": {
+        "issues": "https://github.com/AndreyMashukov/secp256k1-php/issues",
+        "source": "https://github.com/AndreyMashukov/secp256k1-php"
+    },
     "require": {
         "php": ">=8.3",
         "ext-gmp": "*",
