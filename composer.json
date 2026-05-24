@@ -1,0 +1,46 @@
+{
+    "name": "amashukov/secp256k1-php",
+    "description": "secp256k1 elliptic-curve arithmetic + RFC 6979 deterministic ECDSA sign / verify / recover in pure PHP on ext-gmp.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["secp256k1", "ecdsa", "elliptic-curve", "ecc", "crypto", "ethereum", "bitcoin"],
+    "authors": [
+        {
+            "name": "Andrei Mashukov",
+            "email": "a.mashukoff@gmail.com",
+            "homepage": "https://github.com/AndreyMashukov"
+        }
+    ],
+    "require": {
+        "php": ">=8.3",
+        "ext-gmp": "*",
+        "ext-hash": "*"
+    },
+    "require-dev": {
+        "amashukov/rector-php-rules": "^0.1.0",
+        "friendsofphp/php-cs-fixer": "^3.50",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.0",
+        "rector/rector": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Amashukov\\Secp256k1\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Amashukov\\Secp256k1\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test": "phpunit",
+        "stan": "phpstan analyse --memory-limit=512M",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "rector": "rector process --dry-run"
+    }
+}
