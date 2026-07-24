@@ -127,10 +127,17 @@ final class EcdsaTest extends TestCase
         Ecdsa::recover(str_repeat("\x00", 31), 0, str_repeat("\x00", 32), str_repeat("\x00", 32));
     }
 
-    public function testRecoverRejectsBadRecoveryFlag(): void
+    public function testRecoverRejectsARecoveryFlagOutsideTheFullSecp256k1Range(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        Ecdsa::recover(str_repeat("\x00", 32), 2, str_repeat("\x01", 32), str_repeat("\x01", 32));
+        Ecdsa::recover(str_repeat("\x00", 32), 4, str_repeat("\x01", 32), str_repeat("\x01", 32));
+    }
+
+    public function testRecoverAcceptsAllFourRecoveryFlagsAsInput(): void
+    {
+        foreach ([0, 1, 2, 3] as $v) {
+            self::assertNull(Ecdsa::recover(str_repeat("\x00", 32), $v, str_repeat("\x01", 32), str_repeat("\x01", 32)));
+        }
     }
 
     public function testRecoverReturnsNullOnROutOfRange(): void

@@ -24,8 +24,8 @@ final class Ecdsa
         if (32 !== strlen($msgHash) || 32 !== strlen($r) || 32 !== strlen($s)) {
             throw new InvalidArgumentException('msgHash, r, s must each be exactly 32 bytes.');
         }
-        if (0 !== $v && 1 !== $v) {
-            throw new InvalidArgumentException('v must be 0 or 1.');
+        if ($v < 0 || $v > 3) {
+            throw new InvalidArgumentException('v must be between 0 and 3.');
         }
 
         $p  = Secp256k1::p();
@@ -39,14 +39,16 @@ final class Ecdsa
         if (gmp_cmp($rInt, 1) < 0 || gmp_cmp($rInt, gmp_sub($n, gmp_init(1))) > 0) {
             return null;
         }
-        if (gmp_cmp($sInt, 1) < 0 || gmp_cmp($sInt, gmp_sub($n, gmp_init(1))) > 0) {
-            return null;
-        }
-        if (gmp_cmp($rInt, $p) >= 0) {
+        if (gmp_cmp($sInt, 1) < 0 || gmp_cmp($sInt, gmp_div_q($n, gmp_init(2))) > 0) {
             return null;
         }
 
-        $x  = $rInt;
+        $x = gmp_add($rInt, 0 === ($v >> 1) ? gmp_init(0) : $n);
+
+        if (gmp_cmp($x, $p) >= 0) {
+            return null;
+        }
+
         $y2 = gmp_mod(gmp_add(gmp_powm($x, gmp_init(3), $p), gmp_init(7)), $p);
         $y  = gmp_powm($y2, gmp_div_q(gmp_add($p, gmp_init(1)), gmp_init(4)), $p);
 
@@ -54,11 +56,17 @@ final class Ecdsa
             return null;
         }
 
-        if (gmp_intval(gmp_mod($y, gmp_init(2))) !== $v) {
+        if (gmp_intval(gmp_mod($y, gmp_init(2))) !== ($v & 1)) {
             $y = gmp_sub($p, $y);
         }
 
         $R = ['x' => $x, 'y' => $y];
+
+        $nR = Secp256k1::scalarMul($R, $n, $p);
+
+        if (null !== $nR['x'] || null !== $nR['y']) {
+            return null;
+        }
 
         $rInv = gmp_invert($rInt, $n);
         if (false === $rInv) {
